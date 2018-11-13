@@ -1,0 +1,102 @@
+.inline{
+    display: block;
+    text-align: center;
+}
+.inline .form_field{
+    width: auto!important;
+    display: inline-block;
+}
+.fullline{
+    display: block;
+}
+.fullline .form_field{
+    display: block;
+}
+.post_form .form_type_hidden{
+	display: none;
+}
+.flex{
+	display: flex;
+}
+.post_form form{
+    flex-wrap: wrap;
+    display: flex;
+    width: 100%;
+    }
+.form_field.width50{
+   width: 50%;
+}
+.form_field.width25{
+   width: 25%;
+}
+.form_field.width100{
+   width: 100%;
+}
+.form_field.width75{
+   width: 75%;
+}
+.form_field.width33{
+   width: 33%;
+}
+
+.form_field{
+    align-items: center;
+    justify-content: center;
+}
+@media (max-width: 767px){
+.mobile_fullline{
+     display: block;
+}
+.mobile_fullline .form_field{
+	    display: flex;
+   
+}
+.form_field.width_mobile33{
+   width: 33%;
+}
+.form_field.width_mobile50{
+   width: 50%;
+}
+.form_field.width_mobile25{
+   width: 25%;
+}
+.form_field.width_mobile100{
+   width: 100%;
+}
+.form_field.width_mobile75{
+   width: 75%;
+}
+}
+@media (max-width: 1024px){
+.form_field.width_tablet33{
+   width: 33%;
+}
+.form_field.width_tablet50{
+   width: 50%;
+}
+.form_field.width_tablet25{
+   width: 25%;
+}
+.form_field.width_tablet100{
+   width: 100%;
+}
+.form_field.width_tablet75{
+   width: 75%;
+}
+}
+.form_field {
+  //  padding: 10px;
+        margin-top: auto;
+    display: flex;
+}
+.fild_group select{
+	width: 100%;
+}
+.inline .form_field select,.inline .form_field input ,.inline .form_field textareal{
+    width: auto!important;
+}
+.form_field select, .form_field input , .form_field textarea  {
+	    border-style: solid;
+    border-color: transparent;
+    width: 100%;
+}

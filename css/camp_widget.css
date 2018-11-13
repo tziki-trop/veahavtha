@@ -1,0 +1,265 @@
+.all_donation{
+    text-align: center;
+}
+.all_donation p{
+    margin: 0px;
+}
+.all_donation{
+    max-height: 200px;
+    overflow: scroll;
+}
+.hidden{
+    display: none;
+}
+.all_posts_cat .cat{
+	display: flex;
+}
+.crsl .disabled i{
+    color: #80808030;
+}
+.all_posts_cat .text_worper {
+
+    justify-content: center;
+    display: flex;
+}
+.all_posts_cat .img_worper{
+	z-index: 2;
+}
+.rtl .all_posts_cat .text_worper p {
+	margin-right: -20px;
+	padding-right: 40px;
+	margin-left: auto;
+}
+.all_posts_cat .text_worper p {
+       margin: auto;
+	    padding: 20px;
+	padding-left: 40px;
+	
+    margin-left: -20px;
+	margin-right: auto;
+    z-index: 0;
+}
+.switch-field label {
+  display: inline-block;
+  width: 60px;
+
+  text-align: center;
+  text-shadow: none;
+  padding: 6px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+	-webkit-appearance: button-bevel;
+
+  -webkit-transition: all 0.1s ease-in-out;
+  -moz-transition:    all 0.1s ease-in-out;
+  -ms-transition:     all 0.1s ease-in-out;
+  -o-transition:      all 0.1s ease-in-out;
+  transition:         all 0.1s ease-in-out;
+      width: 100%;
+}
+.donation_widget.ltr{
+	//direction: ltr;
+}
+.donation_widget.rtl{
+//	direction: ltr;
+}
+.donation_form input[type="number"] , .other_wprpper{
+	text-align: center;
+	 width: 100%;
+}
+.col2 ,.col1{
+	  flex-grow: 1;
+       width: 50%;
+}
+ .switch-field{
+        flex-wrap: wrap;
+    display: flex;
+}
+.switch-field label:hover {
+    cursor: pointer;
+}
+.switch-field input[type="radio"]{
+    display: none;
+}
+.donation_form .switch-field input:checked + label {
+ // background-color: #A5DC86;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.switch-field label:first-of-type {
+  border-radius: 4px 0 0 4px;
+}
+.donation_form .switch-field .hidden{
+    display: none!important;
+}
+.donation_form input[type="submit"]{
+	width: 100%;
+	    -webkit-appearance: button-bevel;
+}
+.donation_form .other{
+   width: 100%;
+}
+.donation_form .switch-field label:last-of-type {
+  border-radius: 0 4px 4px 0;
+}
+
+
+.progres_worrper{
+    position: relative;
+    background-color: #000;
+    height: 30px;
+    width: 100%;
+      justify-content: center;
+    display: flex;
+    text-align: center;
+}
+.rtl .progres_pr{
+	  left: auto;
+	right: 0px;
+}
+.progres_pr{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+	right: auto;
+    background-color: #fff;
+    height: 100%;
+    width: 55%;
+}
+.progres_worrper p{
+z-index: 1000;
+        margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.flex-center-vertically{
+	display: flex;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+}
+.flex_row{
+	 display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.carusel .unactiv{
+	display: none;
+}
+.owl-carousel.first{
+	display: none;
+}
+.carusel_arr_left{
+    position: absolute;
+    height: 100%;
+    left: 0px;
+}
+.carusel_arr_right{
+    position: absolute;
+    height: 100%;
+    right: 0px;
+}
+.all_posts .row {
+	display: flex;
+}
+.all_posts{
+	display: flex;
+}
+.all_terms{
+	display: flex;
+}
+.all_terms > a{
+	flex-grow: 1;
+	text-align: center;
+}
+.category_image_wrapper img{
+	height: 30px;
+	width: 30px;
+}
+.category_image_wrapper{
+	
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: auto;
+}
+.rtl .category_image_wrapper{
+
+	right: 0px;
+	left: auto;
+}
+.all_posts{
+flex-wrap: wrap;
+	}
+.owl-nav{
+	text-align: center;	
+}
+.owl-nav span{
+	font-size: 30px;	
+}
+.all_terms p {
+	text-align: center;
+}
+.post_button{
+  //  box-shadow: 0px 10px 10px -5px rgba(0,0,0,0.11);
+	}
+.one_post .post_content{
+	display: block;
+	margin-bottom: 50px!important;
+}
+.one_post_worrper{
+	overflow: hidden;
+	width: 100%;
+	height: 95%;
+}
+.one_post .post_button{
+	
+	  position: absolute;
+      display: block;
+      bottom: 0px;
+       right: 2%;
+	   left: auto;
+}
+.rtl .one_post .post_button{
+       left: 2%;
+	right: auto;
+}
+.circle_progress{
+	text-align: center;
+}
+.one_post p ,.one_post h3{
+	margin: 0px;
+}
+.one_post{
+	    display: flex;
+    flex-wrap: wrap;
+	position: relative;
+	    padding: 1%;
+  //flex-grow: 1;
+ // width: 30%;
+	    margin: 0%;
+	padding: 1%;
+	}
+
+.all_posts img{
+ width: 100%;
+	}
+.all_posts .colmn{
+	text-align: center;
+	 flex-grow: 1;
+ 
+}
+.all_posts .colmn.col_30{
+  width: 30%;
+}
+.all_posts .colmn.col_70{
+  width: 70%;
+}
+colmn
+.camp_status{
+	text-align: center;
+}
+   

@@ -1,0 +1,63 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Donat\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-05-17 02:16+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/"
+
+#: donat.php:55 donat.php:56
+msgid "Add Campaign"
+msgstr ""
+
+#: donat.php:42 donat.php:43
+msgid "Add Company"
+msgstr ""
+
+#: donat.php:83
+msgid "Add new campaign"
+msgstr ""
+
+#: donat.php:53 donat.php:54
+msgid "Campaign"
+msgstr ""
+
+#: donat.php:30
+msgid "Campaign Name"
+msgstr ""
+
+#: donat.php:40 donat.php:41
+msgid "Company"
+msgstr ""
+
+#: donat.php:26
+msgid "Company Name"
+msgstr ""
+
+#. Name of the plugin
+msgid "Donat"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "http://pooslestudio.co.il/"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/donat/"
+msgstr ""
+
+#. Description of the plugin
+msgid "This is the donat plugin for my site"
+msgstr ""
+
+#. Author of the plugin
+msgid "Tziki Trop"
+msgstr ""
