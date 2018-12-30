@@ -14,6 +14,26 @@ if ( jQuery( "#timer" ).length ) {
        }
     if(typeof donations != "undefined")
     setInterval(get_data_from_db, 10000); //1000 will  run it every 1 second
+jQuery(".doner_qar_t").click(function(e){
+    if(jQuery(this).hasClass("activ"))
+    return;
+        jQuery(".doner_qar_c").addClass("activ");
+        jQuery(this).addClass("activ");
+        jQuery(".camp_qar_c").removeClass("activ");
+        jQuery(".camp_qar_t").removeClass("activ");
+}); 
+jQuery(".camp_qar_t").click(function(e){
+    if(jQuery(this).hasClass("activ"))
+    return;
+        jQuery(".camp_qar_c").addClass("activ");
+        jQuery(this).addClass("activ");
+        jQuery(".doner_qar_c").removeClass("activ");
+        jQuery(".doner_qar_t").removeClass("activ");
+}); 
+jQuery(document).delegate(".one_post_worrper", "click", function(e) {
+var url = jQuery(e.target).closest(".one_post").find("a").attr("href");
+window.location.href = url;
+});
 jQuery('.short').keyup(function() {
     debugger;
     if(this.value.length > 80){
@@ -61,10 +81,17 @@ tomorrow = yyyy+'-'+mm+'-'+dd;
 			 url = url.replace("&lang=", "&lang=" + jQuery(e.target).find("option:selected").val());
 		else 	url = url.replace("&lang="+lang, "&lang=" + jQuery(e.target).find("option:selected").val());
 	  window.location.href = url;
-		});
+        });
+        jQuery("select[name='currency']").change(function(e){
+            var currency = jQuery(this).find("option:selected").val();
+            gtag('set', {
+                'currency': currency
+               });
+        });
+      
  jQuery("#checkout_form").closest("form").on("submit", function(e){
-//	jQuery("#make_new_donation").click(function(e) {
-     debugger;
+ 
+           debugger;
 		var form = jQuery(this).closest("form");
 			e.stopPropagation();
 			e.preventDefault();
@@ -77,7 +104,23 @@ tomorrow = yyyy+'-'+mm+'-'+dd;
 		var description = form.find("input[name='description']").val();
 	    var doner_description = form.find("input[name='doner_description']").val();
         var lang = form.find("input[name='lang']").val();
-       
+        var name_event = jQuery(".elementor-page-title").find("h1").html();
+        gtag('event', 'checkout_progress', {
+            "items": [
+              {
+                "id": post_id,
+                "name": name_event,
+                "quantity": 1,
+                "price": amount
+              }
+            ],
+          });
+          fbq('track', 'AddToCart', {
+            value: amount,
+            currency: currency,
+          });
+          var tontrack = { 'amount': amount, 'currency': currency, 'id': post_id, 'name': name_event};
+          localStorage.setItem('tontrack', JSON.stringify(tontrack));
         jQuery.ajax({
                 type: 'POST',
                  dataType: 'json',
@@ -98,7 +141,7 @@ tomorrow = yyyy+'-'+mm+'-'+dd;
                     debugger;
                     form.find("input").attr("readonly",true);
 					 
-                  //  window.location.href = data['output']
+                    window.location.href = data['output']
 					//var iframe = "<iframe style=\"overflow: visible; id=\"payment\"  src=\""+data['output']+"\" scrolling=\"no\"></iframe>";
 			    //	form.append(iframe);
                 }
@@ -127,7 +170,17 @@ tomorrow = yyyy+'-'+mm+'-'+dd;
 		donation_form.find("input[name='post_id']").val(post_id);
 		donation_form.find("input[name='amount']").val(amount);
 	    donation_form.find("select[name='currency'] option[value='"+currency+"']").attr("selected",true);
-	       
+	    gtag('event', 'checkout_progress', {
+            "items": [
+              {
+                "id": post_id,
+                "name": jQuery(".elementor-page-title").find("h1").html(),
+                "quantity": 1,
+                "price": amount
+              }
+            ],
+          });
+
 		});
 jQuery("#addea_donation").click(function(e){
 
@@ -198,7 +251,7 @@ jQuery(".donation_form label").click(function() {
 });
 
 jQuery('.owl-carousel').on('changed.owl.carousel', function(event) {
-	debugger;
+	//debugger;
     var element   = jQuery(event.target);
 	element.removeClass("first");
  
@@ -238,6 +291,7 @@ function get_data_from_db(after){
     	var ids = donations.ids;
 	    var term = donations.term;
        var post_id = donations.pid;
+    //   debugger;
        if(!canBeLoaded)
         return;
                jQuery.ajax({
@@ -255,12 +309,9 @@ function get_data_from_db(after){
                        
                 },  
                    beforeSend: function( xhr ){
-					// you can also add your own preloader here
-					// you see, the AJAX call is in process, we shouldn't run it again until complete
 					canBeLoaded = false; 
 				},
                 success: function (data) {
-                //    debugger;
                     if(data.new === true){
                 	 
                     if(after)

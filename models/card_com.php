@@ -9,7 +9,9 @@ class TZT_menge_card_com {
     public function __construct($action) {
         $this->set_action($action);
     }
+    
     protected function set_action($action){
+        
         $this->set_campny_settings();
         if($action === "get_url"){
            $this->url = "https://secure.cardcom.solutions/Interface/LowProfile.aspx";
@@ -36,19 +38,18 @@ class TZT_menge_card_com {
 			$this->settings['InvoiceHead.Email'] = $user['email'];
 			$this->settings['InvoiceHead.CoinID'] = $this->set_currency($payment['currency']);
 			$this->settings['InvoiceHead.SendByEmail'] = true;
-			//SendByEmail
 			$index = 1;
 			foreach($invoice as $line){
 				$this->settings['InvoiceLines'.$index.'.Description'] = $line['description'];
 				$this->settings['InvoiceLines'.$index.'.Price'] = $line['price'];
 				$this->settings['InvoiceLines'.$index.'.Quantity'] = $line['quantity'];
-				//InvoiceLines1.Descriptio
 				$index++;
 			}
 		}
 		//language
 		$this->settings['Language'] = $lang;
-		$this->settings['ReturnValue'] = $id;
+        $this->settings['ReturnValue'] = $id;
+        error_log($id);
 		$this->settings['Operation'] = 1;
 		$this->settings['SumToBill'] = $payment['amount'];
 		$this->settings['APILevel'] = 10;
@@ -56,57 +57,42 @@ class TZT_menge_card_com {
 
 		$this->settings['codepage'] = '65001';
 		$this->settings['IndicatorUrl'] = get_site_url()."/cardcomres";
-      //  return $this->settings;
-       // $this->addParameter('IndicatorUrl',get_site_url()."/cardcomres");
-		$res = $this->make_request('ResponseCode');
+    	$res = $this->make_request('ResponseCode');
 		return $res;
-		//wp_redirect($res['url']);
 	
 	}
 
 	    public function get_res(){
-  /*  $donation_mengger = new \Donations\Donation\TZT_menge_Donations();
-     $res = $donation_mengger->publish_donation((int)$_GET['ReturnValue']);
-  var_dump($res);
-          		wp_die();*/
         if(isset($_GET['lowprofilecode'])){
 			$this->settings['lowprofilecode'] = $_GET['lowprofilecode'];
             $operation = $_GET['Operation'];
-				$url = add_query_arg($this->settings,$this->url);
-			    $response = wp_remote_get( $url);
-			 $body = wp_remote_retrieve_body($response);
+			$url = add_query_arg($this->settings,$this->url);
+			$response = wp_remote_get( $url);
+			$body = wp_remote_retrieve_body($response);
             $output = array();
             parse_str($body,$output);
             //ResponseCode
+            var_dump($output);
             if(array_key_exists('ResponseCode',$output)){
-                if((int)$output['ResponseCode'] != 0 )
+                if((int)$output['ResponseCode'] != 0 ){
                     echo "error";
-            		wp_die();
+                    wp_die();
+                }
             }
               if((int)$operation === 1) {
-                  if((int)$output['DealResponse'] != 0 )
+                  if((int)$output['DealResponse'] != 0 ){
                     echo "error";
             		wp_die();
-                  
+                  }
               }
-    $donation_mengger = new \Donations\Donation\TZT_menge_Donations();
-    $res = $donation_mengger->publish_donation((int)$output['ReturnValue'],true);
-                        		wp_die();
-
-	
-            
-            
-			try {
- 			$json = json_decode( $body );
- 
-			} catch ( Exception $ex ) {
-				$json = null;
-			} // end try/catch
- 
-			var_dump($output);
-		}
-		
-	
+              if(array_key_exists('ReturnValue',$output)){
+                $donation_mengger = new \Donations\Donation\TZT_menge_Donations();
+                $res = $donation_mengger->publish_donation((int)$output['ReturnValue'],true);
+               
+            }
+            header("HTTP/1.1 200 OK");
+            wp_die();
+        }
 }
 
 	    protected function make_request($errorparameter){

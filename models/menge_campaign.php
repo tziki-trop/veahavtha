@@ -82,7 +82,7 @@ class TZT_menge_campaign {
      $this->send_mail("add_update",$id , array('update' => $args['update'] ));
 
     }
-    protected function send_mail($mail_type,$post_id,$mor_dubamics = []){
+    public function send_mail($mail_type,$post_id,$mor_dubamics = []){
         $users = json_decode($this->get_users($post_id));
 		if(!is_array($users))
 			return false;
@@ -107,7 +107,11 @@ class TZT_menge_campaign {
            }
          $blogusers = get_users( 'role=administrator' );
        foreach ( $blogusers as $user ) {
-         $dynamicData['username'] =	get_user_meta($user,'meta_name', true );
+        $user_val =  get_user_meta($user->ID, $mail_type , true);
+         if($user_val != "yes")
+         continue;
+         $dynamicData['username'] =	get_user_meta($user->ID,'meta_name', true );
+         $user_info = get_userdata( $user->ID );
 	     $dynamicData['useremail'] = $user_info->user_email;
          $local =   get_user_locale( $user );
          new \Donations\Email\TZT_Email( $dynamicData['useremail'], $dynamicData, $mail_type , $local);
@@ -278,7 +282,6 @@ class TZT_menge_campaign {
 		   $donation_id =  $this->cpt->insert_taxonomy($post_id,$post_param['post_title']);
            if(is_wp_error($donation_id))
                   return $donation_id; 
-           $this->send_mail("add_camp",$post_id);
 
 		   $this->cpt->set_taxonomy($post_id, $post_param['meta_input']['category'], 'category',true);
 		   $this->cpt->set($post_id,'donation_id',$donation_id['term_taxonomy_id']);
@@ -291,7 +294,8 @@ class TZT_menge_campaign {
 		   $this->set_camp_setting($post_id,'donaters',0);
 		   $this->set_camp_setting($post_id,'users',json_encode(array(get_current_user_id())));
 		  // $this->set_camp_setting($post_id,'youtube',$post_meta['youtube']);
-		   //analyticsget_post_meta
+           //analyticsget_post_meta
+
             
 	   }
         else{
@@ -303,7 +307,6 @@ class TZT_menge_campaign {
 		}
         $thumbnail_id = media_handle_upload('img', $post_id );
 		set_post_thumbnail( $post_id, $thumbnail_id );
-	
         return  $post_id;
     }
 	protected function get_users($post_id){
@@ -382,8 +385,12 @@ class TZT_menge_campaign {
             return $this->cpt->get($id,'donation_id');
         
     }
-    public function add_donation($post_id,$amount,$currency){
-		  $id =  $this->get_camp_source($post_id);
+    public function add_donation($post_id,$amount,$currency,$last){
+          $id =  $this->get_camp_source($post_id);
+          error_log($this->cpt->get($id,'last_don_id',true));
+          if((int)$this->cpt->get($id,'last_don_id') >= (int)$last)
+          return;
+          $this->cpt->update_meta($id,'last_don_id',$last);
           $this->send_mail("new_donation",$id,array('amount' =>$amount, 'currency' => $currency));
 		   if($currency != "ILS")
 			   $amount = $this->currency->convert_to($currency,"ILS",$amount);

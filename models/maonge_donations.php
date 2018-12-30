@@ -32,13 +32,20 @@ class TZT_menge_Donations {
     public function publish_donation($post_id, $publish = false){
         $vals = [];
         $term = $this->cpt->get_taxonomy($post_id,'organization');
+       // $term = get_the_terms( (int)$post_id, "organization" );
+        if(is_wp_error($term)){
+            $error_string = $term->get_error_message();
+            error_log($error_string);
+         }
         $vals['id'] = $this->cpt->get_camp_id($term);
         $vals['amount'] = $this->cpt->get($post_id,'amount');
         $vals['currency'] = $this->cpt->get($post_id,'currency');
+        error_log($vals['id']);
         if($publish)
         $vals['res'] = $this->cpt->change_status($post_id,'publish');
-$donation_id =  $this->camp->add_donation($vals['id'],$vals['amount'],$vals['currency']);
-		
+        else{
+        $donation_id =  $this->camp->add_donation($vals['id'],$vals['amount'],$vals['currency'],$post_id);
+        }
        // change_status($id,$status)
         return $vals;
     }
@@ -56,6 +63,6 @@ $donation_id =  $this->camp->add_donation($vals['id'],$vals['amount'],$vals['cur
       $post_id =   $this->cpt->insert($post_param);
       wp_set_object_terms($post_id, (int)$term_id, 'organization', true);
 
-
+       return $post_id;
 	}
 }

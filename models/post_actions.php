@@ -142,7 +142,6 @@ add_action('admin_post_nopriv_add_campaign', [$this,'add_campaign']);
 						 		'post_status' => 'publish',
 						 	    'posts_per_page' => 2,
                                 'post__not_in' => $_POST['ids'],
-                  //   'date_query' => array('after' => $_POST['date']),
 						 	    'tax_query' => array(
 								'relation' => 'AND',
                                 array(
@@ -151,9 +150,9 @@ add_action('admin_post_nopriv_add_campaign', [$this,'add_campaign']);
                                 ),		 
             )//post__not_in
 		 );
-       if($_POST['scrull'] !== 'true'){
-           $args['date_query'] = array('before' => $_POST['date']);  
-        }
+    //   if($_POST['scrull'] !== 'true'){
+      //     $args['date_query'] = array('before' => $_POST['date']);  
+      //  }
         $my_query = new WP_Query($args);
           if( $my_query->have_posts() ){
             $ids = [];
@@ -178,7 +177,7 @@ add_action('admin_post_nopriv_add_campaign', [$this,'add_campaign']);
         
             }
           else {
-            echo json_encode(array("new" => false));
+         echo json_encode(array("new" => false));
           }
            wp_reset_query();
            wp_die();  		
@@ -199,19 +198,15 @@ add_action('admin_post_nopriv_add_campaign', [$this,'add_campaign']);
                     
             }
 			$donation_mengger = new \Donations\Donation\TZT_menge_Donations($_POST['post_id']);
-			$donation_id = $donation_mengger->add($_POST['amount'],$_POST['currency'],$doner);
+            $donation_id = $donation_mengger->add($_POST['amount'],$_POST['currency'],$doner);
+            
 			$payment_megger = new \Donations\TZT_menge_card_com('get_url');
-			/*$user name email ,$payment currency amount,$lang,$cam*/
 			$invise =  array(
 				array('description'  => $_POST['description'],'price' => $_POST['amount'],'quantity' => 1)
 			); 
 			$user = array('name'  => $_POST['name'],'email'  => $_POST['email']);
 			$lang = $_POST['lang'];
-        	//		echo json_encode($lang);
-
-			// wp_die();
-
-			$cam = $_POST['post_id'];
+            $cam = $_POST['post_id'];
 			$payment = array('currency'  => $_POST['currency'],'amount'  => $_POST['amount']);
             $slug = get_permalink($_POST['post_id']);
 			$res = $payment_megger->get_url($user,$payment,$lang,$donation_id,$invise,$slug);
@@ -221,7 +216,7 @@ add_action('admin_post_nopriv_add_campaign', [$this,'add_campaign']);
 			 wp_die();
 	}
     public function add_bank(){
-        $query_arr = array( 'sub-page' => 'bank','camp_id' => $_POST['post_id']);
+        $query_arr = array( 'sub-page' => 'settings','camp_id' => $_POST['post_id']);
 		
       	if ( !wp_verify_nonce( $_POST['form_nonce'], 'validate' )){
               $this->get_page_url_with_error('no_validate',$query_arr);
@@ -239,10 +234,13 @@ add_action('admin_post_nopriv_add_campaign', [$this,'add_campaign']);
                 $post_id = $this->campaign->add_bank($_POST);
                 $query_arr['status'] = "success";
                 $query_arr['description'] = "camp_wating_approvel";
-                
-                $url = add_query_arg($query_arr,get_permalink($_POST['current']));
-			
-    
+                //add_bank
+                $page = get_permalink($this->pll->get_post_lang((int)get_option("account_page"),$this->pll->get($_POST['current'])));
+
+                $url = add_query_arg($query_arr,$page);
+           // var_dump($page);
+          //  wp_die();
+      
 			}
 		
 	       wp_redirect($url);
@@ -398,12 +396,7 @@ add_action('admin_post_nopriv_add_campaign', [$this,'add_campaign']);
 			  wp_redirect($url);
 	}
 	public function add_campaign(){
-         wp_redirect( $_SERVER['HTTP_REFERER'] );
-
-      //  echo "test";
-      //  wp_die();
-        error_log("add camp");
-
+        // wp_redirect( $_SERVER['HTTP_REFERER'] );
 		if ( wp_verify_nonce( $_POST['form_nonce'], 'validate' )){
                     error_log("add camp validat");
 
@@ -437,7 +430,7 @@ add_action('admin_post_nopriv_add_campaign', [$this,'add_campaign']);
 	}
     
         //$url = $this->get_page_url('data camp error', true);   
-	
+        $this->campaign->send_mail("add_camp",(int)$post_id);
 		  wp_redirect($url);
 	}
 	public function add_campaign_lang(){

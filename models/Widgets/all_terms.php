@@ -132,7 +132,7 @@ public function get_name() {
 	}
   
   protected function render() {
-	   $settings = $this->get_settings_for_display();
+	$settings = $this->get_settings_for_display();
 	    $id = $this->get_id();
 	    if($settings['carusel'] === 'carusel'){
 			       $data = [];

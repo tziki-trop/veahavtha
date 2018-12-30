@@ -18,6 +18,7 @@ use WP_Query;
 use WP_Error;
 use Donations\Pll;
 use Donations\Donation;
+use Donations;
 //use Donations\
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  //apply_filters( 'elementor/template_library/sources/local/register_post_type_args', array $args )
@@ -151,7 +152,8 @@ class TZT_Donations {
 			'multiple' => true,
 			'edit_in_content' => true,
 		]
-	);  
+    );  
+    
         $elementor_theme_manager->register_location(
 	
             'sin_'.$lang,
@@ -182,17 +184,22 @@ class TZT_Donations {
         }
     }
     public function add_plugin_actions(){
-     //   apply_filters( 'elementor/template-library/get_template', array $data )
-add_action('update_currencys_daily',[$this,'update_currencys']);
-    //    add_filter('elementor/template-library/get_template',[$this,'reg_ele_cpt']);
-add_action( 'elementor/theme/register_locations', [$this,'register_elementor_locations'] );
+        add_action( 'show_user_profile', [$this,'user_field'] );
+add_action( 'edit_user_profile', [$this,'user_field'] );
+add_action( 'personal_options_update', [$this,'save_custom_user_profile_fields'] );
+add_action( 'edit_user_profile_update', [$this,'save_custom_user_profile_fields'] );
+
+        add_action('update_currencys_daily',[$this,'update_currencys']);
+        add_action( 'elementor/theme/register_locations', [$this,'register_elementor_locations'] );
 		add_action("elementor/frontend/section/before_render", [ $this,'before_section_render']);
 		add_action("elementor/frontend/section/after_render", [ $this,'after_section_render']);
 		add_action('elementor/element/before_section_start', [ $this,'add_section_contrulers'],10, 2);
 		
 		add_action('wp_enqueue_scripts', [ $this,'add_css_and_js']);
         add_action( 'init', [ $this,'create_post_type'] );
-          add_action( 'init', [ $this,'register_strings'] );
+        add_action( 'castum_reg_cpt', [ $this,'create_post_type'] );
+
+        add_action( 'init', [ $this,'register_strings'] );
       
         add_action('plugins_loaded', [ $this,'wan_load_textdomain']);
 		add_action( 'elementor/widgets/widgets_registered', [ $this, 'on_widgets_registered' ] );
@@ -200,26 +207,93 @@ add_action( 'elementor/theme/register_locations', [$this,'register_elementor_loc
  		add_filter('query_vars', array($this, 'add_query_vars'), 0);
 		add_action('parse_request', array($this, 'sniff_requests'), 0);
 		add_action('init', array($this, 'add_endpoint'), 0);
-//	add_action( 'organization_add_form_fields', array($this, 'add_feature_group_field'), 10, 2 );
-add_filter('manage_organization_custom_column', [$this,'add_feature_group_column_content'], 10, 3 );
+        add_filter('manage_organization_custom_column', [$this,'add_feature_group_column_content'], 10, 3 );
         add_filter('manage_edit-organization_columns', [$this,'add_feature_group_column'] );
-//add_filter( 'elementor/theme/get_location_templates/template_id', [$this,'set_pll_with_elementor']);
-add_action( 'get_tnx_content', [$this,'tnx_page_content'] );
-//add_filter( "views_edit-donations", [$this,'status_donation_change'] );
-add_action( 'publish_donations', [$this,'status_donation_publish'], 10, 2 );
-add_action( 'publish_campaign', [$this,'status_campaign_publish'], 10, 2 );
-add_action('end_camp',[$this,'status_campaign_end']);
+        add_action( 'get_tnx_content', [$this,'tnx_page_content'] );
+        add_action( 'publish_donations', [$this,'status_donation_publish'], 10, 2 );
+        add_action( 'publish_campaign', [$this,'status_campaign_publish'], 10, 2 );
+        add_action('end_camp',[$this,'status_campaign_end']);
         
-   add_action( 'elementor_pro/posts/query/user_query',[$this,'user_query']);
-add_action('after_setup_theme', [$this,'remove_admin_bar']);
+        add_action( 'elementor_pro/posts/query/user_query',[$this,'user_query']);
+        add_action('after_setup_theme', [$this,'remove_admin_bar']);
  
-add_action('init',[$this,"reriecr_deshbord"]);
-    add_action( 'edit_form_after_title', [ $this,'edit_form_before_editor'] );
-add_action( 'add_meta_boxes_mail_temp', [$this,'global_notice_meta_box' ]);
-add_action( 'save_post_mail_temp', [$this,'save_global_notice_meta_box_data' ]);
-add_filter( 'manage_mail_temp_posts_columns', [$this,'set_custom_mail_temp_column'] );
-add_action( 'manage_mail_temp_posts_custom_column' , [$this,'custom_mail_temp_column'], 10, 2 );
+        add_action('init',[$this,"reriecr_deshbord"]);
+        add_action( 'edit_form_after_title', [ $this,'edit_form_before_editor'] );
+        add_action( 'add_meta_boxes_mail_temp', [$this,'global_notice_meta_box' ]);
+        add_action( 'save_post_mail_temp', [$this,'save_global_notice_meta_box_data' ]);
+        add_filter( 'manage_mail_temp_posts_columns', [$this,'set_custom_mail_temp_column'] );
+        add_action( 'manage_mail_temp_posts_custom_column' , [$this,'custom_mail_temp_column'], 10, 2 );
+        add_action('wp_head', [$this,'add_track_to_hdr']);
+
     } 
+    public function add_track_to_hdr(){
+        $gtags = array('UA-122534366-1');
+        $fbs = array('243478923146791');
+        $currency_set = '';
+        global $wp_query;
+        if ( is_singular( 'campaign' )) {
+            $page_id = get_queried_object_id();
+            $camp_mengger =  new \Donations\Campaign\TZT_menge_campaign($page_id); 
+            $id = $camp_mengger->get_camp_source($page_id);
+            $gtag =   get_post_meta( $id, 'analytics', true );
+            $fb =   get_post_meta( $id, 'facebook', true );
+            $currency = get_post_meta( $page_id, 'currency', true );
+            $currency_set = "gtag('set', {
+                'currency': '".$currency."'
+               });";
+            if(!empty($gtag)){
+                array_push($gtags,$gtag);
+            }
+            if(!empty($fb)){
+                array_push($fbs,$fb);
+            }
+
+        }
+
+        ?>
+                <!-- Global site tag (gtag.js) - Google Analytics -->
+                <script async src="https://www.googletagmanager.com/gtag/js?id=UA-122534366-1"></script>
+                <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+             <?php
+              foreach($gtags as $gtag){
+                  echo "gtag('config', '".$gtag."');";
+              }
+              echo $currency_set;
+              ?>
+           
+            </script>
+            <!-- Facebook Pixel Code -->
+            <script>
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            <?php
+              foreach($fbs as $fb){
+                  echo "fbq('init', '".$fb."');";
+              }
+            ?>
+           // fbq('init', '1366369253482048');  
+            fbq('track', 'PageView');
+            </script>
+            <noscript><img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id=243478923146791&ev=PageView&noscript=1"
+            /></noscript>
+            <!-- End Facebook Pixel Code -->
+
+
+ 
+        <?php
+   
+
+    }
     public function set_custom_mail_temp_column($columns){
             $columns['type'] = __( 'Type', 'business-management' );
           $columns['lang'] = __( 'Lang', 'business-management' );
@@ -388,6 +462,9 @@ public function status_campaign_end($id){
       return;   
 }
 public function status_campaign_publish($ID , $post ){
+    if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+        return;
+    }
       $camp_mengger =  new \Donations\Campaign\TZT_menge_campaign($ID); 
       $camp_mengger->start($ID);
       return;
@@ -466,6 +543,7 @@ public function add_feature_group_column_content( $content, $column_name, $term_
 	}
     public function tnx_page_content(){
         global $wp;
+
  $post = get_page_by_path( $wp->query_vars['campaignname'], OBJECT, 'campaign' );
   //var_dump(  $id = $post->ID);
  $args = array(  'p'=> $post->ID,'post_type' => 'campaign');
@@ -474,9 +552,49 @@ public function add_feature_group_column_content( $content, $column_name, $term_
         $my_query = new WP_Query($args);
          ob_start();
          while ($my_query->have_posts()) : $my_query->the_post(); 
-        
-             elementor_theme_do_location( 'tnx' );
-          //  array_push($ids,get_the_ID());
+         $camp_mengger =  new \Donations\Campaign\TZT_menge_campaign(get_the_ID()); 
+         $id = $camp_mengger->get_camp_source(get_the_ID());
+         $gtag =   get_post_meta( $id, 'analytics', true );
+         $fb =   get_post_meta( $id, 'facebook', true );
+         echo "<script>";
+        if(!empty($gtag)){
+            echo "gtag('config', '".$gtag."');"; 
+         }
+         if(!empty($fb)){
+            echo "fbq('init', '".$fb."'); fbq('track', 'PageView');";
+         }
+         echo "  var tontrack = localStorage.getItem('tontrack');
+         debugger;
+         tontrack = JSON.parse(tontrack)
+         gtag('set', {
+            'currency': tontrack.currency
+           });
+          gtag('event', 'purchase_event', {
+            'event_category': 'purchase',
+            'event_label': tontrack.name,
+            'value': tontrack.amount
+          });
+         fbq('track', 'Purchase', {
+            value: tontrack.amount,
+            currency: tontrack.currency,
+          });
+          var timeStampInMs = window.performance && window.performance.now && window.performance.timing && window.performance.timing.navigationStart ? window.performance.now() + window.performance.timing.navigationStart : Date.now();
+
+          gtag('event', 'purchase', {
+            'transaction_id': timeStampInMs,
+            'value': tontrack.amount,
+            'currency': tontrack.currency,
+            'items': [
+              {
+                'id': tontrack.id,
+                'name': tontrack.name,
+                'quantity': 1,
+                'price': tontrack.amount
+              },
+            ]
+          }); 
+         </script>";
+        elementor_theme_do_location( 'tnx' );
             endwhile;
       $content = ob_get_clean();
 	  echo $content;
@@ -486,10 +604,17 @@ public function add_feature_group_column_content( $content, $column_name, $term_
 	   public function sniff_requests(){
 		global $wp;
 		if(isset($wp->query_vars['cardcom'])){
+            do_action('castum_reg_cpt');
            $payment_megger = new \Donations\TZT_menge_card_com('check_res');
             $payment_megger->get_res();
         }
      
+}
+public function test_card_com_res(){
+
+       $payment_megger = new \Donations\TZT_menge_card_com('check_res');
+        $payment_megger->get_res();
+ 
 }
 
 	public function add_section_contrulers($element,$section_id){
@@ -639,18 +764,17 @@ public function global_notice_meta_box_callback($post){
  $lang = get_post_meta( $post->ID, 'mail_lang', true );
       
 ?>
-<p>Mail type</p>
+<p>סוג המייל</p>
 <select id="mail_type" name="mail_type">
+<?php
+foreach ($this->get_meil_type() as $key => $value) {
+?>
+<option value="<?php echo $key ?>"<?=$value == $key ? ' selected="selected"' : '';?>><?php echo $value ?></option>
 
-<option value="add_update"<?=$value == 'add_update' ? ' selected="selected"' : '';?>>update</option>
-<option value="add_camp"<?=$value == 'add_camp' ? ' selected="selected"' : '';?>>add camp</option>
-<option value="camp_approv"<?=$value == 'camp_approv' ? ' selected="selected"' : '';?>>approved</option>
-<option value="new_donation"<?=$value == 'new_donation' ? ' selected="selected"' : '';?>>new donation</option>
-<option value="start_camp"<?=$value == 'start_camp' ? ' selected="selected"' : '';?>>new camp started</option>
-
+<?php } ?>
 </select>
 
-<p>Lang</p>
+<p>שפה</p>
 <select id ="lang_mail" name="mail_lang">
 <option value="he_IL"<?=$lang == 'he_IL' ? ' selected="selected"' : '';?>>he</option>
 <option value="en_US"<?=$lang == 'en_US' ? ' selected="selected"' : '';?>>en</option>
@@ -658,7 +782,16 @@ public function global_notice_meta_box_callback($post){
 <?php
 
 }
-   public function global_notice_meta_box() {
+protected  function get_meil_type(){
+    return array(
+        'add_update' => "הוספת עדכון לקמפיין",
+        'add_camp' => "הוספת  קמפיין",
+        'camp_approv' => "קמפיין אושר",
+        'new_donation' => "תרומה חדשה",
+        'start_camp' => "קמפיין התחיל",
+    );
+}
+public function global_notice_meta_box() {
 
     add_meta_box(
         'global-notice',
@@ -670,7 +803,7 @@ public function global_notice_meta_box_callback($post){
     );
 
 }
-    public function create_post_type() {
+public function create_post_type() {
          if( !session_id() )
   {
     session_start();
@@ -768,9 +901,9 @@ public function global_notice_meta_box_callback($post){
 		'show_in_inline_dropdown'   => true,
 		'dashicon'                  => 'dashicons-businessman',
 	) );
-//Successfully completed
+    //Successfully completed
  
-register_post_type( 'donations',
+    register_post_type( 'donations',
     array(
       'labels' => array(
         'name' => __( 'Donations', 'donat'),
@@ -826,8 +959,51 @@ register_post_type( 'donations',
         'edit_posts' => true,
         'read_private_posts' => true,// Use false to explicitly deny
     )
-);
+    );
 }
+//$lingo = array('en' => 'English', 'md' => '普通話', 'es' => 'Español', 'fr' => 'Français', 'pt' => 'Português');
+
+public function user_field( $user ) {
+   // $gender = get_the_author_meta( 'dealing', $user->ID);
+  //  $company = esc_attr( get_the_author_meta( 'company', $user->ID ) );
+    ?>
+    <h3><?php _e('קבלת התראות'); ?></h3>
+    <table class="form-table">
+    <tr>
+            <th>
+                <label for="alert"><?php __('התראות'); ?>
+            </label></th>
+            <td>
+            <span class="description"><?php _e('התראות?'); ?></span><br>
+           
+    <?php
+    foreach ($this->get_meil_type() as $key => $value) {
+        $user_val =  get_user_meta($user->ID, $key , true);
+
+    ?>
+     <label>
+     <input type="checkbox" name="<?php echo $key ?>"
+      <?php if ($user_val == 'yes' ) { ?>checked="checked"<?php }?>
+       value="yes"><?php echo $value ?><br />
+     </label>
+    <?php } ?>
+            </td>
+        </tr>
+        
+    </table>
+    <?php 
+}
+
+
+public function save_custom_user_profile_fields( $user_id ) {
+    if ( !current_user_can( 'edit_user', $user_id ) )
+        return FALSE;
+        foreach ($this->get_meil_type() as $key => $value) {
+            update_usermeta( $user_id, $key, $_POST[$key] );
+        }    
+
+}
+
 
 }
 //register_activation_hook( __FILE__, array( 'TZT_Donations', 'install' ) );

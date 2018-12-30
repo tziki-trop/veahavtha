@@ -1,0 +1,27 @@
+{
+    "remotePath": "/wp-content/plugins/donat",
+    "host": "185.151.196.117",
+    "username": "tzikimac@veahavtha.itech-websolutions.com",
+    "password": "fvadfjlhb###13eedfsdf$",
+    "port": 21,
+    "secure": false,
+    "protocol": "ftp",
+    "uploadOnSave": true,
+    "passive": false,
+    "debug": true,
+    "privateKeyPath": null,
+    "passphrase": null,
+    "ignore": [
+        "\\.vscode",
+        "\\.git",
+        "\\.DS_Store",
+        "\\assets",
+        "\\.history",
+        "\\node_modules"
+    ],
+    "generatedFiles": {
+        "uploadOnSave": true,
+        "extensionsToInclude": [".js", ".css"],
+        "path": "/dist"
+    }
+}
