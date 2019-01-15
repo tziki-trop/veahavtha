@@ -287,7 +287,14 @@ add_action( 'edit_user_profile_update', [$this,'save_custom_user_profile_fields'
             src="https://www.facebook.com/tr?id=243478923146791&ev=PageView&noscript=1"
             /></noscript>
             <!-- End Facebook Pixel Code -->
-
+            <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>
+ 
+ <script src="https://www.negishim.com/accessibility/accessibility_pro_group255.js" type="text/javascript"></script>
+ <script type="text/javascript">
+     accessibility_rtl = true;
+     pixel_from_side = 20;
+     pixel_from_start = 100;
+ </script>
 
  
         <?php

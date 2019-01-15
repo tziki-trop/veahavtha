@@ -22,6 +22,7 @@ class TZT_pll {
     }
     protected function set_array_strings(){
         $this->strings = array(
+            'No campaign yet',  
             'No update yet',
             'pending',
             'activ',

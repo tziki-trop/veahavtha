@@ -209,9 +209,11 @@ jQuery(".donation_form label").click(function() {
 	});
 	jQuery('.owl-carousel').each(function( index ) {
 		//var settings = jQuery(this).attr("data-carusel");
-		var settings = get_carusel_settings(jQuery(this));
+        var settings = get_carusel_settings(jQuery(this));
+        var navText = ["<i class=\"fa fa-arrow-circle-right\"></i>","<i class=\"fa fa fa-arrow-circle-left\"></i>","next","prev"];
 		var cruesel = jQuery(this).owlCarousel({
-		rtl:jQuery("body").hasClass("rtl"),
+        rtl:jQuery("body").hasClass("rtl"),
+        navText:navText,
 	    lazyLoad: true,
 			autoplayTimeout: 2500,
 			autoplay: true,

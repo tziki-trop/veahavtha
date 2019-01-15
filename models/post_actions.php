@@ -120,7 +120,7 @@ add_action('admin_post_nopriv_add_campaign', [$this,'add_campaign']);
 	}
     protected function get_page_url_with_error($myerror,$qouery_arr = false){
        $vars = array('status' => 'error');  
-    
+           
         if(is_wp_error($myerror))
         $vars['error_code']  = $myerror->get_error_code();
         else
@@ -401,7 +401,7 @@ add_action('admin_post_nopriv_add_campaign', [$this,'add_campaign']);
                     error_log("add camp validat");
 
 		   $post_id = $this->campaign->add($_POST);
-                    error_log("added");
+                   // error_log("added");
 
             if(is_wp_error($post_id)){
                      error_log("is error");

@@ -406,6 +406,33 @@ $this->end_controls_section();
 					'selector' => '{{WRAPPER}}  .all_posts_cat .category_name',
 			]
 		);
+		$this->add_responsive_control(
+			'icon_nov_size', [
+				'label' => __( 'Icon size', 'client_to_google_sheet' ),
+				'type' => \Elementor\Controls_Manager::NUMBER,
+				'show_label' => true,
+				'default' => 16,
+                'selectors' => [
+					'{{WRAPPER}} .owl-nav' => 'font-size: {{SIZE}}px;',  
+                ],
+                
+			]
+		);
+        $this->add_control(
+			'icon_color',
+			[
+				'label' => __( 'Icons Color', 'plugin-domain' ),
+				'type' => \Elementor\Controls_Manager::COLOR,
+				'scheme' => [
+					'type' => \Elementor\Scheme_Color::get_type(),
+					'value' => \Elementor\Scheme_Color::COLOR_1,
+				],
+				'selectors' => [
+					'{{WRAPPER}} .owl-nav' => 'color: {{VALUE}}',
+				],
+             
+			]
+		);   
 		 $this->end_controls_section();
 	 }
   protected function set_query(){
@@ -508,24 +535,30 @@ $this->end_controls_section();
 		  ?>
 <div class="all_posts_cat">
 <?php
+		   
 		  foreach($my_query as $query){
-		        if( !$query['query']->have_posts() )
-                  continue;
+		        if( !$query['query']->have_posts() ){
+					if(count ($my_query) === 1){
+						$pll = new \Donations\Pll\TZT_pll();
+						echo $pll->get_string('No campaign yet');
+					}
+					continue;
+				}
 			   $image_id = get_term_meta ( $query['term']->term_id, 'category-image-id', true ); 
 			  		  ?>
 	           <div class="cat all_post">
-		<div class="img_worper">
-	<?php  echo wp_get_attachment_image ( $image_id, array(100,100) ); ?>
-			</div><div class="text_worper">
-<p class="category_name"><?php echo $query['term'] -> name; ?></p>
-	</div></div>
+				<div class="img_worper">
+				<?php  echo wp_get_attachment_image ( $image_id, array(100,100) ); ?>
+				</div><div class="text_worper">
+				<p class="category_name"><?php echo $query['term'] -> name; ?></p>
+				</div></div>
                 <?php
 			  //  $image_id = get_term_meta ( $term-> term_id, 'category-image-id', true ); 
 			    $this->get_query($query['query'],$settings,$edit);
 		  }
 		  		  ?>
-</div>
-<?php
+			</div>
+			<?php
 	  }
   }
 	protected function get_query($my_query,$settings,$edit){
@@ -543,7 +576,8 @@ $this->end_controls_section();
 				   $carusel_div = "owl-carousel owl-theme first\" data-carusel=\"carusel_".$id;
 				   $arrterms = [];
 				   $data = [];
-				   $data['settings'] = array('dots'=> false, 'nav' => true,
+				   $data['settings'] = array('dots'=> false,
+				   							 'nav' => true,
 											'responsive'=> array('desktop' => $settings['posts_per_row'],
 																'mobile' => $settings['posts_per_row_mobile'],
 															   'tablet' => $settings['posts_per_row_tablet'] )
