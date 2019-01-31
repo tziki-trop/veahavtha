@@ -2,6 +2,9 @@
     display: block;
     text-align: center;
 }
+#lang_choice_wp-widget-polylang{
+   padding: 0px!important;
+}
 .inline .form_field{
     width: auto!important;
     display: inline-block;

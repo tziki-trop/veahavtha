@@ -110,10 +110,13 @@ class TZT_Meta_as_Tag extends \Elementor\Core\DynamicTags\Tag {
 			if($val === 0 || $val === "0")
 	          $val = '&#48;';
 			if($param_name === "donated")
-		    $val = "<span id=\"amount\">".$val."</span>".$donaction_amount['currensy'];
-            if($param_name === "donaters")
-		    $val = "<span id=\"donaters\">".$val."</span>";
+		    $val = "<span id=\"amount\">".number_format($val,0)."</span>".$donaction_amount['currensy'];
+            if($param_name === "donaters")  
+			$val = "<span id=\"donaters\">".$val."</span>";
+			if($param_name === "amount")
+			$val = number_format($val,0);
 
+//number_format($val,0)
 	}
 		else if($param_name === "content"){
                 $content_post = get_post(get_queried_object_id());

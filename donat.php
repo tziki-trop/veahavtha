@@ -224,8 +224,24 @@ add_action( 'edit_user_profile_update', [$this,'save_custom_user_profile_fields'
         add_filter( 'manage_mail_temp_posts_columns', [$this,'set_custom_mail_temp_column'] );
         add_action( 'manage_mail_temp_posts_custom_column' , [$this,'custom_mail_temp_column'], 10, 2 );
         add_action('wp_head', [$this,'add_track_to_hdr']);
+        add_filter( 'pll_the_language_link', [$this,'filter_pll_translation_urlsadfasdfaf'], 10, 2 ); 
 
     } 
+    public function filter_pll_translation_urlsadfasdfaf( $url, $language_slug ) {
+        if(is_archive()){
+          //  echo "test: <br>";
+         //   echo $language_slug;
+
+           // if( $language_slug == "he")
+            if( $language_slug == "en")
+            return "/en/campaign/"; 
+            return "/campaign/"; 
+
+        }
+        return $url;
+     }
+            
+   // add the filter 
     public function add_track_to_hdr(){
         $gtags = array('UA-122534366-1');
         $fbs = array('243478923146791');
