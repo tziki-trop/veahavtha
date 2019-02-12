@@ -41,9 +41,21 @@ add_action('admin_post_nopriv_add_campaign', [$this,'add_campaign']);
 		add_action('admin_post_nopriv_make_donaction', [$this,'make_donaction']);
 		add_action('admin_post_make_donaction', [$this,'make_donaction']);
 		add_action('wp_ajax_nopriv_make_donaction_ajax', [$this,'make_donaction_ajax']);
-		add_action('wp_ajax_make_donaction_ajax', [$this,'make_donaction_ajax']);
-	}
-	//add_donation
+        add_action('wp_ajax_make_donaction_ajax', [$this,'make_donaction_ajax']);
+
+        add_action('make_card_com_payment', [$this,'make_card_com_payment']);
+        add_shortcode('get_hok_for_cam',[$this,'get_hok_for_cam']);
+    }
+    public function get_hok_for_cam(){
+      $hok =  get_post_meta(get_the_ID(), "hok", true);
+      if($hok == 0 || $hok == false  || $hok == null)
+      return;
+      else{
+          return "<select name=\"hok\"><option value=\"0\" selected=\"selected\">".pll__('one payment')."</option><option value=\"".$hok."\">
+           ".pll__('multy payment')." (".$hok." ".pll__('payments').")
+          </option></select>";
+      }
+    }
     public function add_camp_update(){
         $query_arr = array( 'sub-page' => 'update','camp_id' => $_POST['post_id']);
 		if ( !wp_verify_nonce( $_POST['form_nonce'], 'validate' )){
@@ -184,7 +196,12 @@ add_action('admin_post_nopriv_add_campaign', [$this,'add_campaign']);
     
     
     }
-	public function  make_donaction_ajax(){
+    public function make_card_com_payment($post_id){
+        $payment_megger = new \Donations\TZT_menge_card_com('charg_token',(int)$post_id);
+        $res = $payment_megger->ask_payment_with_token($post_id);
+
+    }
+	public function  make_donaction_ajax(){  
         
 		$doner = array('name'=>'','email'=>'','doner_description'=>'');
 			if (!isset($_POST['amount']) || !isset($_POST['currency']) || !isset($_POST['post_id'])) {
@@ -200,14 +217,14 @@ add_action('admin_post_nopriv_add_campaign', [$this,'add_campaign']);
 			$donation_mengger = new \Donations\Donation\TZT_menge_Donations($_POST['post_id']);
             $donation_id = $donation_mengger->add($_POST['amount'],$_POST['currency'],$doner);
             
-			$payment_megger = new \Donations\TZT_menge_card_com('get_url');
+			$payment_megger = new \Donations\TZT_menge_card_com('get_url',(int)$_POST['post_id']);
 			$invise =  array(
 				array('description'  => $_POST['description'],'price' => $_POST['amount'],'quantity' => 1)
 			); 
 			$user = array('name'  => $_POST['name'],'email'  => $_POST['email']);
 			$lang = $_POST['lang'];
             $cam = $_POST['post_id'];
-			$payment = array('currency'  => $_POST['currency'],'amount'  => $_POST['amount']);
+			$payment = array('currency'  => $_POST['currency'],'amount'  => $_POST['amount'],'payments' => $_POST['payments']);
             $slug = get_permalink($_POST['post_id']);
 			$res = $payment_megger->get_url($user,$payment,$lang,$donation_id,$invise,$slug);
 			
@@ -252,7 +269,7 @@ add_action('admin_post_nopriv_add_campaign', [$this,'add_campaign']);
 					wp_redirect($url);
 					wp_die();
 			}
-			$payment_megger = new \Donations\TZT_menge_card_com('get_url');
+			$payment_megger = new \Donations\TZT_menge_card_com('get_url',(int)$_POST['post_id']);
 			/*$user name email ,$payment currency amount,$lang,$cam*/
 			$invise =  array(
 				array('description'  => $_POST['description'],'price' => $_POST['amount'],'quantity' => 1)

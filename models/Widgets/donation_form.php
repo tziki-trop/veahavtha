@@ -380,6 +380,19 @@ public function get_name() {
 	  else {
 		  $dir = "rtl";
 	  }
+	  $form1 = get_post_meta(get_queried_object_id(), 'amount_form_1', true);
+	  if($form1 !=  false || $form1 != '' || $form1 != null){
+		$form2 =  get_post_meta(get_queried_object_id(), 'amount_form_2', true);
+		$form3 =  get_post_meta(get_queried_object_id(), 'amount_form_3', true);
+		$form4 =  get_post_meta(get_queried_object_id(), 'amount_form_4', true);
+	  }
+	  else{
+		$form1 = 20;
+		$form2 = 50;
+		$form3 = 100;
+		$form4 = 200;
+
+	}
        //  error_log( "tet" );
 
 ?>
@@ -391,18 +404,18 @@ public function get_name() {
 	  <input type="hidden" name="post_id" value="<?php echo get_queried_object_id(); ?>">
     <div class="switch-field flex">
    <div class="col1">
-      <input type="radio" id="fix_amount_20" name="fix_amount" value="20" checked/>
-      <label class="donation_label" for="fix_amount_20">20<?php echo $currency['name']; ?></label>
+      <input type="radio" id="fix_amount_20" name="fix_amount" value="<?php echo $form1; ?>" checked/>
+      <label class="donation_label" for="fix_amount_20"><?php echo $form1; ?><?php echo $currency['name']; ?></label>
       </div>
 		 <div class="col2">
-      <input type="radio" id="fix_amount_50" name="fix_amount" value="50" />
-      <label class="donation_label" for="fix_amount_50">50<?php echo $currency['name']; ?></label>
+      <input type="radio" id="fix_amount_50" name="fix_amount" value="<?php echo $form2; ?>" />
+      <label class="donation_label" for="fix_amount_50"><?php echo $form2; ?><?php echo $currency['name']; ?></label>
        </div><div class="col1">
-            <input type="radio" id="fix_amount_100" name="fix_amount" value="100" />
-      <label  class="donation_label" for="fix_amount_100">100<?php echo $currency['name']; ?></label>
+            <input type="radio" id="fix_amount_100" name="fix_amount" value="<?php echo $form3; ?>" />
+      <label  class="donation_label" for="fix_amount_100"><?php echo $form3; ?><?php echo $currency['name']; ?></label>
        </div><div class="col2">
-      <input type="radio" id="fix_amount_200" name="fix_amount" value="200">
-      <label  class="donation_label" for="fix_amount_200">200<?php echo $currency['name']; ?></label>
+      <input type="radio" id="fix_amount_200" name="fix_amount" value="<?php echo $form4; ?>">
+      <label  class="donation_label" for="fix_amount_200"><?php echo $form4; ?><?php echo $currency['name']; ?></label>
       </div>
 		<div class="other_wprpper">
        <input  type="radio" id="fix_amount_other" name="fix_amount" value="">

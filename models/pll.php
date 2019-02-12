@@ -22,6 +22,9 @@ class TZT_pll {
     }
     protected function set_array_strings(){
         $this->strings = array(
+            'one payment',
+            'multy payment',
+            'payments',
             'No campaign yet',  
             'No update yet',
             'pending',

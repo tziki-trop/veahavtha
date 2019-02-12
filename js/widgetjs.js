@@ -105,6 +105,7 @@ tomorrow = yyyy+'-'+mm+'-'+dd;
 	    var doner_description = form.find("input[name='doner_description']").val();
         var lang = form.find("input[name='lang']").val();
         var name_event = jQuery(".elementor-page-title").find("h1").html();
+        var hok = form.find("select[name='hok']").val(); 
         gtag('event', 'checkout_progress', {
             "items": [
               {
@@ -135,7 +136,9 @@ tomorrow = yyyy+'-'+mm+'-'+dd;
                        name: name,
                        email: email,
                        description: description,
-                       doner_description: doner_description
+                       doner_description: doner_description,
+                       payments: hok,  
+                       
                 },       
                 success: function (data) {
                     debugger;
