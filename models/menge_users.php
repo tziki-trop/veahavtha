@@ -1,7 +1,7 @@
 <?php
 namespace Donations\User;
 //use Polylang;
-class TZT_menge_user {
+class TZT_menge_user {   
 
     protected $user;
     public function __construct($user = null) {
@@ -10,7 +10,7 @@ class TZT_menge_user {
         if($user == null && is_user_logged_in())	
          $this->user = get_current_user_id();
 		else $this->user = $user;
-    
+     
     }
    public function add_campiagn($post_id){
 	   return $this->add_meta('campiagn_id',$post_id);

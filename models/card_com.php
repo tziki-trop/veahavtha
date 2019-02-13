@@ -92,7 +92,8 @@ class TZT_menge_card_com {
 
 		$this->settings['codepage'] = '65001';
 		$this->settings['IndicatorUrl'] = get_site_url()."/cardcomres";
-    	$res = $this->make_request('ResponseCode');
+        $res = $this->make_request('ResponseCode');
+        // save LowProfileCode peameter on order to use it in "get res"
 		return $res;
 	
 	}
